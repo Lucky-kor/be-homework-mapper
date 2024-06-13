@@ -66,11 +66,14 @@ public class MemberController {
     @GetMapping
     public ResponseEntity getMembers() {
         List<Member> members = memberService.findMembers();
-        List<MemberResponseDto> response =
-                members.stream()
-                        .map(member -> mapper.memberToMemberResponseDto(member))
-                        .collect(Collectors.toList());
-        return new ResponseEntity<>(response, HttpStatus.OK);
+
+        List<MemberResponseDto> responseDtoList = mapper.membersToMemberResponseDtos(members);
+
+//        List<MemberResponseDto> response =
+//                members.stream()
+//                        .map(member -> mapper.memberToMemberResponseDto(member))
+//                        .collect(Collectors.toList());
+        return new ResponseEntity<>(responseDtoList, HttpStatus.OK);
     }
 
     @DeleteMapping("/{member-id}")
