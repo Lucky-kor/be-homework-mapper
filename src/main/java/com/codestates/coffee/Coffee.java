@@ -9,9 +9,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CoffeeResponseDto {
-    private long coffeeId;
-    private String korName;
-    private String engName;
-    private Integer price;
+public class Coffee {
+    long coffeeId;
+    String korName;
+    String engName;
+    int price;
 }
