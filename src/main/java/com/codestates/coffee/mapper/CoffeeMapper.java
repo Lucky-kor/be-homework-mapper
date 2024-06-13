@@ -10,9 +10,9 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface CoffeeMapper {
-    Coffee coffeePostDtoToMember (CoffeePostDto coffeePostDto);
-    Coffee coffeePatchDtoToMember (CoffeePatchDto coffeePatchDto);
+    Coffee coffeePostDtoToCoffee (CoffeePostDto coffeePostDto);
+    Coffee coffeePatchDtoToCoffee (CoffeePatchDto coffeePatchDto);
     CoffeeResponseDto coffeeToCoffeeResponseDto(Coffee coffee);
-    List<CoffeeResponseDto> coffeesToCoffeeResponseDtoList (List<Coffee> coffeeList);
+    List<CoffeeResponseDto> coffeesToCoffeeResponseDtos (List<Coffee> coffees);
 
 }
