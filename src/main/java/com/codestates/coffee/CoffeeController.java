@@ -51,7 +51,7 @@ public class CoffeeController {
     }
 
     @GetMapping("/{coffee-id}")
-    public ResponseEntity getCoffee(@PathVariable("coffee-id") long coffeeId) {
+    public ResponseEntity getCoffee(@PathVariable("coffee-id") @Positive long coffeeId) {
         // TODO CoffeeService 클래스와 연동하세요.
         // TODO DTO <-> Entity 변환 Mapper를 적용하세요.
         Coffee Response = coffeeService.findCoffee(coffeeId);
