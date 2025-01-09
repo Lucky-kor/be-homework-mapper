@@ -1,5 +1,12 @@
-package com.codestates.coffee;
+package com.codestates.coffee.controller;
 
+import com.codestates.coffee.dto.CoffeePatchDto;
+import com.codestates.coffee.dto.CoffeePostDto;
+import com.codestates.coffee.dto.CoffeeResponseDto;
+import com.codestates.coffee.entity.Coffee;
+import com.codestates.coffee.mapper.CoffeeMapper;
+import com.codestates.coffee.service.CoffeeService;
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -7,17 +14,32 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
+import java.util.List;
+import java.util.stream.Collectors;
 
+@Getter
 @RestController
 @RequestMapping("/v5/coffees")
 @Validated
 public class CoffeeController {
+
+    private final CoffeeService coffeeService;
+    private final CoffeeMapper coffeeMapper;
+
+    public CoffeeController(CoffeeService coffeeService, CoffeeMapper coffeeMapper) {
+        this.coffeeService = coffeeService;
+        this.coffeeMapper = coffeeMapper;
+    }
+
     @PostMapping
     public ResponseEntity postCoffee(@Valid @RequestBody CoffeePostDto coffeePostDto) {
         // TODO CoffeeService 클래스와 연동하세요.
         // TODO DTO <-> Entity 변환 Mapper를 적용하세요.
 
-        return new ResponseEntity<>(coffeePostDto, HttpStatus.CREATED);
+        Coffee coffee = coffeeMapper.coffeePostDtoTocoffee(coffeePostDto);
+        Coffee response = coffeeService.createCoffee(coffee);
+
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PatchMapping("/{coffee-id}")
@@ -28,6 +50,8 @@ public class CoffeeController {
         // TODO CoffeeService 클래스와 연동하세요.
         // TODO DTO <-> Entity 변환 Mapper를 적용하세요.
 
+        Coffee response = coffeeService.updateCoffee(coffeeMapper.coffeePatchDtoTocoffee(coffeePatchDto));
+
         return new ResponseEntity<>(coffeePatchDto, HttpStatus.OK);
     }
 
@@ -36,15 +60,22 @@ public class CoffeeController {
         // TODO CoffeeService 클래스와 연동하세요.
         // TODO DTO <-> Entity 변환 Mapper를 적용하세요.
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        Coffee response = coffeeService.findCoffee(coffeeId);
+        return new ResponseEntity<>(coffeeMapper.coffeeToCoffeeResponseDto(response),HttpStatus.OK);
     }
 
     @GetMapping
     public ResponseEntity getCoffees() {
         // TODO CoffeeService 클래스와 연동하세요.
         // TODO DTO <-> Entity 변환 Mapper를 적용하세요.
+        List<Coffee> coffees = coffeeService.findCoffees();
+        //list 타입으로 dto로 매핑 시켜줘야함.
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        List<CoffeeResponseDto> coffeesDto = coffees.stream()
+                .map(coffee -> coffeeMapper.coffeeToCoffeeResponseDto(coffee))
+                .collect(Collectors.toList());
+
+        return new ResponseEntity<>(coffeesDto,HttpStatus.OK);
     }
 
     @DeleteMapping("/{coffee-id}")
@@ -52,6 +83,9 @@ public class CoffeeController {
         // TODO CoffeeService 클래스와 연동하세요.
         // TODO DTO <-> Entity 변환 Mapper를 적용하세요.
 
+        coffeeService.deleteCoffee(coffeeId);
+
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
 }
